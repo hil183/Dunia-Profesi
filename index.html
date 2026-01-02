@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Dunia Profesi - Hilwah Zahira Sakinah</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root { --p: #FF5722; --s: #4CAF50; --biru: #4FC3F7; --pink: #FF80AB; --kuning: #FFEB3B; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+        
+        @keyframes membal {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.1); }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        body { 
+            background: #B5FFFC; background-image: radial-gradient(white 2px, transparent 2px); background-size: 30px 30px;
+            font-family: 'Lexend', sans-serif; display: flex; justify-content: center; align-items: center; 
+            min-height: 100vh; margin: 0; padding: 15px; overflow: hidden;
+        }
+
+        .container { 
+            background: white; padding: 25px; border-radius: 50px; box-shadow: 0 15px 0 #81D4FA; 
+            text-align: center; width: 100%; max-width: 380px; border: 8px solid #FFF; 
+            position: relative; animation: membal 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+        
+        .btn-setting { position: absolute; top: 15px; right: 15px; z-index: 3000; background: none; border: none; cursor: pointer; }
+        .btn-setting img { width: 22px; opacity: 0.5; transition: 0.3s; }
+
+        .vol-panel { 
+            position: absolute; top: 45px; right: 10px; z-index: 2999; background: white; 
+            padding: 10px; border-radius: 20px; border: 3px solid var(--biru); 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1); width: 150px; animation: membal 0.4s ease;
+        }
+        .vol-row { display: flex; align-items: center; justify-content: space-between; font-size: 10px; font-weight: bold; color: #0277BD; margin: 4px 0; }
+        .vol-row input { width: 60px; accent-color: var(--biru); }
+
+        .full-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; z-index: 1000; padding: 20px; text-align: center; }
+        #overlay-masuk { background: var(--biru); color: white; justify-content: center; cursor: pointer; }
+        #overlay-thanks { background: #fff; color: #333; overflow-y: auto; display: block; padding-top: 40px; }
+        
+        .decor { font-size: 40px; margin: 5px; display: inline-block; animation: bounce 2s infinite; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+
+        .bio-card {
+            display: flex; align-items: center; gap: 12px; background: #FFF0F5;
+            padding: 12px; border-radius: 30px; border: 4px solid var(--pink); margin: 15px 0; text-align: left;
+        }
+        .bio-card img { width: 85px; height: 110px; border-radius: 18px; object-fit: cover; border: 3px solid white; }
+        .bio-text { font-size: 11px; line-height: 1.4; color: #333; }
+        .footer-info { font-size: 10px; color: #888; font-weight: bold; margin-top: 10px; text-align: center; }
+
+        .btn-mulai { 
+            background: var(--s); color: white; border: none; padding: 15px; border-radius: 35px; 
+            font-size: 20px; font-weight: 800; box-shadow: 0 8px 0 #388E3C; cursor: pointer; 
+            width: 100%; margin-top: 10px;
+        }
+        
+        .card { 
+            background: white; border: 5px solid var(--biru); border-radius: 25px; 
+            padding: 15px; margin: 10px 0; font-weight: 800; font-size: 1.5rem; 
+            cursor: pointer; box-shadow: 0 8px 0 #E1F5FE; color: #0277BD;
+        }
+
+        /* GAMBAR PROFESI SANGAT BESAR */
+        #job-img {
+            width: 100%; height: 240px; 
+            object-fit: contain; margin-bottom: 15px;
+        }
+
+        #hint-box { 
+            background: #FFF176; border: 5px dashed #FBC02D; border-radius: 25px; 
+            margin-bottom: 10px; font-size: 85px; color: #E65100; font-weight: 900; 
+            min-height: 110px; display: flex; justify-content: center; align-items: center;
+        }
+        
+        .hidden { display: none !important; }
+        .blink { animation: flash 0.5s infinite alternate; background: #FFF9C4 !important; border-color: var(--p) !important; }
+        @keyframes flash { from { transform: scale(1); } to { transform: scale(1.08); } }
+    </style>
+</head>
+<body>
+
+    <button class="btn-setting" onclick="toggleSetting()">
+        <img src="https://cdn-icons-png.flaticon.com/512/3524/3524659.png" alt="Settings">
+    </button>
+
+    <div id="panel-volume" class="vol-panel hidden">
+        <div class="vol-row"><span>Musik</span><input type="range" id="volBgm" min="0" max="1" step="0.1" value="0.3" oninput="updateVolume()"></div>
+        <div class="vol-row"><span>Suara</span><input type="range" id="volVoice" min="0" max="1" step="0.1" value="1" oninput="updateVolume()"></div>
+    </div>
+
+    <div id="overlay-masuk" class="full-overlay">
+        <div class="decor">🎨</div>
+        <h1 style="font-size: 26px;">Selamat Datang<br>Anak Hebat! 🎈</h1>
+        <div style="background:white; color:var(--biru); padding:10px 25px; border-radius:30px; font-weight:900; margin: 20px 0; box-shadow: 0 6px 0 #81D4FA;">By Hilwah Zahira Sakinah</div>
+        <div class="decor">🚀</div>
+        <button onclick="bukaDedikasi()" class="btn-mulai" style="width: auto; padding: 15px 40px;">KLIK UNTUK MASUK ➔</button>
+    </div>
+
+    <div id="overlay-thanks" class="full-overlay hidden">
+        <div style="max-width: 360px; margin: 0 auto; text-align: justify; padding-bottom: 50px;">
+            <h3 style="color: var(--pink); text-align: center; border-bottom: 4px solid var(--pink); margin-bottom: 10px;">TERIMA KASIH PENULIS UCAPKAN KEPADA</h3>
+            <p style="font-size: 12px;">Segala puji dan syukur penulis panjatkan ke hadirat Allah SWT atas limpahan rahmat, kemudahan, dan kesempatan sehingga penulis dapat menyelesaikan pembuatan game edukasi untuk anak usia dini ini dengan baik.</p>
+            <p style="font-size: 12px;">Ucapan terima kasih penulis sampaikan kepada <b>Bapak Dede Ridwan, S.Pd., M.Pd.</b> selaku dosen pengampu mata kuliah Media Pembelajaran yang telah memberikan arahan, bimbingan, serta kesempatan untuk berkarya melalui pengembangan game edukasi ini.</p>
+            <p style="font-size: 12px;">Penulis juga mengucapkan terima kasih kepada keluarga, teman-teman, serta seluruh pihak yang telah memberikan dukungan, semangat, dan inspirasi selama proses perancangan dan pengembangan game edukasi ini.</p>
+            <p style="font-size: 12px;">Semoga game edukasi sederhana ini bermanfaat dalam menanamkan nilai-nilai positif, khususnya sikap toleransi dan pengenalan profesi sejak dini.</p>
+            
+            <div class="bio-card">
+                <img src="assets/foto-hilwah.jpg" onerror="this.src='https://via.placeholder.com/85x110?text=FOTO'">
+                <div class="bio-text">
+                    <b>Nama:</b> Hilwah Zahira Sakinah<br>
+                    <b>TTL:</b> Sukabumi, 01 Agustus 2003<br>
+                    <b>Prodi:</b> PIAUD - Semester 5<br>
+                    <b>Angkatan:</b> 2023<br>
+                    <b>Kampus:</b> Institut Madani Nusantara
+                </div>
+            </div>
+            
+            <div class="footer-info">
+                Dibuat: 28 Des 2025 | Selesai: 02 Jan 2026
+            </div>
+
+            <button onclick="mulaiGameSekarang()" class="btn-mulai">MAIN YUK! ✨</button>
+        </div>
+    </div>
+
+    <audio id="audioOpening" loop src="assets/opening.mp3" preload="auto"></audio>
+    <audio id="bgm" loop src="assets/musik-latar.mp3" preload="auto"></audio>
+    <audio id="sfxBenar" src="assets/benar.mp3" preload="auto"></audio>
+    <audio id="sfxSalah" src="assets/salah.mp3" preload="auto"></audio>
+    <audio id="sfxBantuan" src="assets/suara-bantuan.mp3" preload="auto"></audio>
+    <audio id="sfxMenang" src="assets/perayaan.mp3" preload="auto"></audio>
+    <audio id="chanSoal"></audio>
+    <audio id="chanPilihan"></audio>
+    <audio id="chanHuruf"></audio>
+
+    <div class="container">
+        <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <button id="btnReplay" class="hidden" onclick="putarUlang()" style="background:none; border:none; font-size:35px; cursor:pointer;">🔊</button>
+            <div style="background: #FFF0F5; color: #FF4081; padding: 5px 15px; border-radius: 15px; font-weight: 900; border: 2px solid #F8BBD0; font-size: 14px;">⭐ Skor: <span id="txtSkor">0</span></div>
+            <div style="width:35px;"></div>
+        </div>
+
+        <div id="scrGame" class="hidden">
+            <img id="job-img" src="">
+            <div id="hint-box" class="hidden"></div>
+            <div id="boxPilihan"></div>
+        </div>
+
+        <div id="scrWin" class="hidden">
+            <div class="decor">🏆</div>
+            <h2 style="color: var(--s);">HEBAT! KAMU MENANG!</h2>
+            <button onclick="location.reload()" class="btn-mulai">ULANGI LAGI 🔄</button>
+        </div>
+    </div>
+
+    <script>
+        const MASTER_DATA = [
+            { n: "PETANI", a: "assets/soal-petani.mp3", p: "assets/pilihan-petani.mp3", i: "assets/petani.png" },
+            { n: "GURU", a: "assets/soal-guru.mp3", p: "assets/pilihan-guru.mp3", i: "assets/guru.png" },
+            { n: "DOKTER", a: "assets/soal-dokter.mp3", p: "assets/pilihan-dokter.mp3", i: "assets/dokter.png" },
+            { n: "KOKI", a: "assets/soal-koki.mp3", p: "assets/pilihan-koki.mp3", i: "assets/koki.png" },
+            { n: "PILOT", a: "assets/soal-pilot.mp3", p: "assets/pilihan-pilot.mp3", i: "assets/pilot.png" },
+            { n: "POLISI", a: "assets/soal-polisi.mp3", p: "assets/pilihan-polisi.mp3", i: "assets/polisi.png" },
+            { n: "TENTARA", a: "assets/soal-tentara.mp3", p: "assets/pilihan-tentara.mp3", i: "assets/tentara.png" },
+            { n: "ASTRONOT", a: "assets/soal-astronot.mp3", p: "assets/pilihan-astronot.mp3", i: "assets/astronot.png" },
+            { n: "PEMADAM KEBAKARAN", a: "assets/soal-pemadam.mp3", p: "assets/pilihan-pemadam.mp3", i: "assets/pemadam.png" },
+            { n: "YOUTUBER", a: "assets/soal-youtuber.mp3", p: "assets/pilihan-youtuber.mp3", i: "assets/youtuber.png" },
+            { n: "KURIR PAKET", a: "assets/soal-kurir.mp3", p: "assets/pilihan-kurir.mp3", i: "assets/kurir.png" },
+            { n: "FOTOGRAFER", a: "assets/soal-fotografer.mp3", p: "assets/pilihan-fotografer.mp3", i: "assets/fotografer.png" },
+        ];
+
+        let indexSoal = 0, skor = 0, daftarAcak = [], lagiSibuk = false;
+
+        function toggleSetting() { document.getElementById('panel-volume').classList.toggle('hidden'); }
+
+        // FUNGSI KRUSIAL: Dipicu oleh klik tombol "KLIK UNTUK MASUK"
+        function bukaDedikasi() {
+            const op = document.getElementById('audioOpening');
+            
+            // Pancing audio agar "terbuka" izinnya
+            op.play().then(() => {
+                console.log("Opening Play Berhasil");
+            }).catch(e => {
+                // Jika masih gagal, kita coba cara paksa kedua
+                op.muted = true;
+                op.play().then(() => { op.muted = false; });
+            });
+
+            document.getElementById('overlay-masuk').classList.add('hidden');
+            document.getElementById('overlay-thanks').classList.remove('hidden');
+        }
+
+        function updateVolume() {
+            document.getElementById('bgm').volume = document.getElementById('volBgm').value;
+            const v = document.getElementById('volVoice').value;
+            ['chanSoal','chanPilihan','chanHuruf','sfxBantuan','sfxBenar','sfxSalah','sfxMenang'].forEach(id => {
+                document.getElementById(id).volume = v;
+            });
+        }
+
+        async function putarAudio(id, src) {
+            return new Promise((resolve) => {
+                const el = document.getElementById(id);
+                el.src = src;
+                el.load();
+                el.onended = resolve;
+                el.onerror = resolve;
+                el.play().catch(resolve);
+            });
+        }
+
+        function mulaiGameSekarang() {
+            document.getElementById('audioOpening').pause();
+            document.getElementById('overlay-thanks').classList.add('hidden');
+            document.getElementById('scrGame').classList.remove('hidden');
+            document.getElementById('btnReplay').classList.remove('hidden');
+            updateVolume(); 
+            document.getElementById('bgm').play();
+            daftarAcak = [...MASTER_DATA].sort(() => Math.random() - 0.5);
+            jalankanBabak();
+        }
+
+        async function jalankanBabak() {
+            if(indexSoal >= daftarAcak.length) {
+                document.getElementById('bgm').pause();
+                document.getElementById('scrGame').classList.add('hidden');
+                document.getElementById('scrWin').classList.remove('hidden');
+                document.getElementById('sfxMenang').play();
+                confetti({ particleCount: 150 });
+                return;
+            }
+            lagiSibuk = false;
+            document.getElementById('job-img').style.height = "240px";
+            document.getElementById('hint-box').classList.add('hidden');
+            const soal = daftarAcak[indexSoal];
+            document.getElementById('job-img').src = soal.i;
+            
+            let opsi = [soal, MASTER_DATA.find(x => x.n !== soal.n)].sort(() => Math.random() - 0.5);
+            const box = document.getElementById('boxPilihan'); box.innerHTML = "";
+            opsi.forEach(o => {
+                const b = document.createElement('div');
+                b.className = "card"; b.id = "btn-" + o.n; b.innerText = o.n;
+                b.onclick = () => cekJawaban(o.n, soal.n);
+                box.appendChild(b);
+            });
+            
+            await putarAudio('chanSoal', soal.a);
+            for(let o of opsi) {
+                if(lagiSibuk) break;
+                const btn = document.getElementById("btn-" + o.n);
+                btn.classList.add('blink');
+                await putarAudio('chanPilihan', o.p);
+                btn.classList.remove('blink');
+            }
+        }
+
+        async function cekJawaban(p, b) {
+            if(lagiSibuk) return; lagiSibuk = true;
+            document.getElementById('chanSoal').pause(); 
+            document.getElementById('chanPilihan').pause();
+            
+            if(p === b) {
+                skor++; document.getElementById('txtSkor').innerText = skor;
+                document.getElementById('sfxBenar').play();
+                confetti({ particleCount: 50 });
+                indexSoal++;
+                setTimeout(jalankanBabak, 2000); 
+            } else {
+                document.getElementById('sfxSalah').play();
+                setTimeout(async () => {
+                    document.getElementById('job-img').style.height = "120px";
+                    await putarAudio('sfxBantuan', 'assets/suara-bantuan.mp3');
+                    const huruf = b[0].toLowerCase();
+                    document.getElementById('hint-box').innerText = b[0];
+                    document.getElementById('hint-box').classList.remove('hidden');
+                    await putarAudio('chanHuruf', `assets/huruf-${huruf}.mp3`);
+                    lagiSibuk = false;
+                }, 800);
+            }
+        }
+        function putarUlang() { if(!lagiSibuk) jalankanBabak(); }
+    </script>
+</body>
+</html>
