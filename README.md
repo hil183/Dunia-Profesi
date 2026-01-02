@@ -1,7 +1,8 @@
 # 🎨 Game Edukasi: Dunia Profesi 🚀
 ### "Main Seru, Kenali Cita-Citamu!"
 ---
-🔗 **[Mainkan Game Sekarang!](https://hil183.github.io/Dunia-Profesi/**
+🎮 **[Klik di Sini untuk Memainkan Game](https://hil183.github.io/Dunia-Profesi/)**
+---
 ---
 Halo! Selamat datang di **Dunia Profesi** 🎈. Game interaktif ini dirancang khusus untuk anak usia dini agar mereka bisa mengenal berbagai profesi dengan cara yang asyik dan penuh kegembiraan!
 
